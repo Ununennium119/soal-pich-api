@@ -7,13 +7,14 @@ export default class User {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column({unique: true})
+    @Column({nullable: false, unique: true})
     username!: string;
 
-    @Column()
+    @Column({nullable: false})
     password!: string;
 
     @Column({
+        nullable: false,
         type: 'enum',
         enum: UserRole,
         default: UserRole.PLAYER,

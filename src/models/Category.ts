@@ -1,12 +1,12 @@
 import {Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn} from 'typeorm';
 import CategoryDto from "../dto/category/CategoryDto";
 
-@Entity('category')
+@Entity('categories')
 export default class Category {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column({unique: true})
+    @Column({nullable: false, unique: true})
     title!: string;
 
     @CreateDateColumn()
