@@ -18,7 +18,7 @@ router.post('/register', (req: Request, res: Response, next: NextFunction) => {
         next(e);
     }
 });
-router.post('/current-user', authenticateJWT, (req: Request, res: Response, next: NextFunction) => {
+router.get('/current-user', authenticateJWT, (req: Request, res: Response, next: NextFunction) => {
     try {
         return currentUser(req, res, next);
     } catch (e) {

@@ -2,7 +2,7 @@ import {NextFunction, Request, Response} from "express";
 import {plainToInstance} from "class-transformer";
 import {validate} from "class-validator";
 import ValidationErrorList from "../dto/ValidationError";
-import CategoryCreateRequest from "../dto/category/CategoryCreateRequest";
+import CategoryCreateUpdateRequest from "../dto/category/CategoryCreateUpdateRequest";
 import {
     categoryExistsById,
     categoryExistsByTitle,
@@ -14,13 +14,12 @@ import {
     servicePageCategories,
     serviceUpdateCategory
 } from "../services/categoryService";
-import CategoryUpdateRequest from "../dto/category/CategoryUpdateRequest";
 import CategoryPageRequest from "../dto/category/CategoryPageRequest";
 import {OrderDirection} from "../enum/OrderDirection";
 
 export const createCategory = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const request = plainToInstance(CategoryCreateRequest, req.body);
+        const request = plainToInstance(CategoryCreateUpdateRequest, req.body);
         const errors = await validate(request);
         if (errors.length > 0) {
             res.status(400).json({errors});
@@ -65,7 +64,7 @@ export const getCategory = async (req: Request, res: Response, next: NextFunctio
 
 export const updateCategory = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const request = plainToInstance(CategoryUpdateRequest, req.body);
+        const request = plainToInstance(CategoryCreateUpdateRequest, req.body);
         const errors = await validate(request);
         if (errors.length > 0) {
             res.status(400).json({errors});

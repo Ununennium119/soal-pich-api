@@ -1,0 +1,32 @@
+### Login
+POST http://localhost:3000/login
+Content-Type: application/json
+
+{
+"username": "admin",
+"password": "admin"
+}
+
+> {% client.global.set("token", response.body.token) %}
+
+### Create Category
+POST http://localhost:3000/categories
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "Sports"
+}
+
+### Get Question
+GET http://localhost:3000/categories/3
+Authorization: Bearer {{token}}
+
+### Update Question
+POST http://localhost:3000/categories/3
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "General"
+}

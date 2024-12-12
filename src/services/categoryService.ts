@@ -1,13 +1,13 @@
 import AppDataSource from "../config/datasource";
 import Category from "../models/Category";
-import CategoryCreateRequest from "../dto/category/CategoryCreateRequest";
-import CategoryUpdateRequest from "../dto/category/CategoryUpdateRequest";
+import CategoryCreateUpdateRequest from "../dto/category/CategoryCreateUpdateRequest";
 import CategoryPageRequest from "../dto/category/CategoryPageRequest";
-import CategoryPageResponse from "../dto/category/CategoryPageResponse";
+import PageResponse from "../dto/PageResponse";
+import CategoryDto from "../dto/category/CategoryDto";
 
 const categoryRepository = AppDataSource.getRepository(Category)
 
-export const serviceCreateCategory = async (request: CategoryCreateRequest) => {
+export const serviceCreateCategory = async (request: CategoryCreateUpdateRequest) => {
     const category = new Category();
     category.title = request.title;
     const createdCategory = await categoryRepository.save(category)
@@ -24,7 +24,7 @@ export const serviceGetCategoryByTitle = async (title: string) => {
     return category?.toDto()
 }
 
-export const serviceUpdateCategory = async (id: number, request: CategoryUpdateRequest) => {
+export const serviceUpdateCategory = async (id: number, request: CategoryCreateUpdateRequest) => {
     const category = await categoryRepository.findOneBy({id: id})
     if (!category) {
         throw new Error("No category found");
@@ -63,7 +63,7 @@ export const servicePageCategories = async (request: CategoryPageRequest) => {
     const categoryDtoList = categories.map((category) => {
         return category.toDto()
     })
-    const response = new CategoryPageResponse();
+    const response = new PageResponse<CategoryDto>();
     response.content = categoryDtoList
     response.page = request.page
     response.total = total

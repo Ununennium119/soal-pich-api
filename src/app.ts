@@ -3,6 +3,7 @@ import indexRouter from './routes/indexRouter';
 import { logger } from './middlewares/logger';
 import {errorHandler} from "./middlewares/errorHandler";
 import categoryRouter from "./routes/categoryRouter";
+import questionRouter from "./routes/questionRouter";
 
 const app: Application = express();
 
@@ -13,6 +14,7 @@ app.use(errorHandler);
 
 app.use('/', indexRouter);
 app.use('/categories', categoryRouter);
+app.use('/questions', questionRouter);
 
 app.get('/health', (_: Request, res: Response) => {
     res.status(200).json({ status: 'ok' });
