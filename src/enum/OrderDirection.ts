@@ -1,4 +1,4 @@
-export enum UserRole {
-    PLAYER = 'player',
-    DESIGNER = 'designer'
+export enum OrderDirection {
+    ASC = 'ASC',
+    DESC = 'DESC'
 }

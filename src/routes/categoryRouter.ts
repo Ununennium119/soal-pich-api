@@ -1,29 +1,21 @@
-import {Router, Request, Response, NextFunction} from 'express';
-import {currentUser, login, register} from "../controllers/authController";
+import {Router} from 'express';
 import authenticateJWT from "../middlewares/jwtAuthenticator";
+import {
+    createCategory,
+    deleteCategory,
+    getCategory,
+    listCategories,
+    updateCategory
+} from "../controllers/categoryController";
+import authorizeRole from "../middlewares/roleChecker";
+import {UserRole} from "../enum/UserRole";
 
 const router: Router = Router();
 
-router.post('/login', (req: Request, res: Response, next: NextFunction) => {
-    try {
-        return login(req, res, next);
-    } catch (e) {
-        next(e);
-    }
-});
-router.post('/register', (req: Request, res: Response, next: NextFunction) => {
-    try {
-        return register(req, res, next);
-    } catch (e) {
-        next(e);
-    }
-});
-router.post('/current-user', authenticateJWT, (req: Request, res: Response, next: NextFunction) => {
-    try {
-        return currentUser(req, res, next);
-    } catch (e) {
-        next(e);
-    }
-});
+router.post('', [authenticateJWT, authorizeRole([UserRole.DESIGNER])], createCategory);
+router.get('/:id', [authenticateJWT, authorizeRole([UserRole.DESIGNER])], getCategory);
+router.put('/:id', [authenticateJWT, authorizeRole([UserRole.DESIGNER])], updateCategory);
+router.delete('/:id', [authenticateJWT, authorizeRole([UserRole.DESIGNER])], deleteCategory);
+router.get('', [authenticateJWT, authorizeRole([UserRole.DESIGNER])], listCategories);
 
 export default router;

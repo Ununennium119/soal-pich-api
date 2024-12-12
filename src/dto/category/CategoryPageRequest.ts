@@ -1,10 +1,8 @@
 import {IsEnum, IsNotEmpty, IsNumber, IsString, Length, Min} from "class-validator";
-import {OrderDirection} from "../enum/OrderDirection";
+import {OrderDirection} from "../../enum/OrderDirection";
 
 export default class CategoryPageRequest {
     @IsString()
-    @IsNotEmpty()
-    @Length(4)
     title: string = '';
 
     @IsNumber()
