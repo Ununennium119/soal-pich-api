@@ -106,11 +106,11 @@ export const questionExistsByTitle = async (title: string): Promise<boolean> => 
 
 export const getRandomUnansweredQuestion = async (userId: number, category?: number): Promise<number | null> => {
     const answeredQuestionIds = await answeredQuestionRepository
-        .createQueryBuilder('answered_question')
-        .select('answered_question.question_id')
-        .where('answered_question.user_id = :userId', {userId})
-        .getMany();
-    const answeredIds = answeredQuestionIds.map((aq) => aq.question.id);
+        .createQueryBuilder('answered_questions')
+        .select('answered_questions.question_id', 'questionId')
+        .andWhere('answered_questions.user_id = :userId', { userId })
+        .getRawMany();
+    const answeredIds = answeredQuestionIds.map((aq) => aq.questionId);
 
     const queryBuilder = questionRepository.createQueryBuilder('question')
         .select('question.id')
@@ -169,9 +169,9 @@ export const submitAnswer = async (userId: number, questionId: number, selectedA
 
 export const isQuestionAnswered = async (userId: number, questionId: number): Promise<boolean> => {
     const count = await answeredQuestionRepository
-        .createQueryBuilder('answered_question')
-        .where('answered_question.user_id = :userId', { userId })
-        .andWhere('answered_question.question_id = :questionId', { questionId })
+        .createQueryBuilder('answered_questions')
+        .andWhere('answered_questions.user_id = :userId', { userId })
+        .andWhere('answered_questions.question_id = :questionId', { questionId })
         .getCount();
 
     return count > 0;

@@ -50,9 +50,9 @@ export const serviceListCategories = async () => {
 }
 
 export const servicePageCategories = async (request: CategoryPageRequest) => {
-    const queryBuilder = categoryRepository.createQueryBuilder()
+    const queryBuilder = categoryRepository.createQueryBuilder('categories')
     if (request.title) {
-        queryBuilder.where('user.title ILIKE :title', {title: `%${request.title}%`})
+        queryBuilder.where('categories.title ILIKE :title', {title: `%${request.title}%`})
     }
     const [categories, total] = await queryBuilder
         .orderBy(request.order, request.direction)

@@ -13,9 +13,9 @@ import {UserRole} from "../enum/UserRole";
 const router: Router = Router();
 
 router.post('', [authenticateJWT, authorizeRole([UserRole.DESIGNER])], createCategory);
-router.get('/:id', [authenticateJWT, authorizeRole([UserRole.DESIGNER])], getCategory);
+router.get('/:id', [authenticateJWT, authorizeRole([UserRole.DESIGNER, UserRole.PLAYER])], getCategory);
 router.put('/:id', [authenticateJWT, authorizeRole([UserRole.DESIGNER])], updateCategory);
 router.delete('/:id', [authenticateJWT, authorizeRole([UserRole.DESIGNER])], deleteCategory);
-router.get('', [authenticateJWT, authorizeRole([UserRole.DESIGNER])], listCategories);
+router.get('', [authenticateJWT, authorizeRole([UserRole.DESIGNER, UserRole.PLAYER])], listCategories);
 
 export default router;

@@ -163,6 +163,8 @@ export const listQuestions = async (req: Request, res: Response, next: NextFunct
         }
         if (order) {
             request.order = order.toString();
+        } else {
+            request.order = 'id';
         }
         if (direction) {
             request.direction = direction.toString() as OrderDirection;
