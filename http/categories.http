@@ -18,11 +18,11 @@ Content-Type: application/json
   "title": "Sports"
 }
 
-### Get Question
+### Get Category
 GET http://localhost:3000/categories/3
 Authorization: Bearer {{token}}
 
-### Update Question
+### Update Category
 POST http://localhost:3000/categories/3
 Authorization: Bearer {{token}}
 Content-Type: application/json

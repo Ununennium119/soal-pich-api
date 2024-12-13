@@ -3,8 +3,8 @@ POST http://localhost:3000/login
 Content-Type: application/json
 
 {
-"username": "player",
-"password": "player"
+"username": "player3",
+"password": "player3"
 }
 
 > {% client.global.set("token", response.body.token) %}
