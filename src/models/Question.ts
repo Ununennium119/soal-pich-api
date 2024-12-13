@@ -39,7 +39,7 @@ export default class Question {
     @Column({nullable: false})
     answer!: number;
 
-    @ManyToOne(() => Category, {nullable: true})
+    @ManyToOne(() => Category, {nullable: true, eager: true})
     @JoinColumn()
     category?: Category | null;
 
