@@ -74,7 +74,6 @@ export const servicePageQuestions = async (request: QuestionPageRequest) => {
     if (request.title) {
         queryBuilder.andWhere('questions.title ILIKE :title', {title: `%${request.title}%`})
     }
-    console.log(request.category)
     if (request.category) {
         queryBuilder.andWhere('questions.category.id = :category', {category: request.category})
     }

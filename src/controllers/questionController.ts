@@ -218,7 +218,6 @@ export const answerQuestion = async (req: Request, res: Response, next: NextFunc
 
         const {id} = req.params;
         const parsedId = parseInt(id)
-        console.log(parsedId)
         if (!await questionExistsById(parsedId)) {
             res.status(404).send();
             return;
