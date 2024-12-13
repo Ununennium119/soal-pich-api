@@ -3,6 +3,7 @@ import { DataSource } from 'typeorm';
 import User from '../models/User';
 import Category from "../models/Category";
 import Question from "../models/Question";
+import AnsweredQuestion from "../models/AnsweredQuestion";
 
 const AppDataSource = new DataSource({
     type: 'postgres',
@@ -13,7 +14,7 @@ const AppDataSource = new DataSource({
     password: process.env.DB_PASSWORD || 'pass',
     synchronize: process.env.DB_SYNC === 'true',
     logging: process.env.DB_LOGGING === 'true',
-    entities: [User, Category, Question],
+    entities: [User, Category, Question, AnsweredQuestion],
 });
 
 export default AppDataSource;

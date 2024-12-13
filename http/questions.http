@@ -3,8 +3,8 @@ POST http://localhost:3000/login
 Content-Type: application/json
 
 {
-"username": "admin",
-"password": "admin"
+"username": "player",
+"password": "player"
 }
 
 > {% client.global.set("token", response.body.token) %}
@@ -55,4 +55,21 @@ Authorization: Bearer {{token}}
 
 ### List Questions
 GET http://localhost:3000/questions?page=0&title=question&category=1
+Authorization: Bearer {{token}}
+
+### Get Random Question
+GET http://localhost:3000/questions/random
+Authorization: Bearer {{token}}
+
+### Answer Question
+POST http://localhost:3000/questions/3/answer
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+"answer": 1
+}
+
+### Get Scoreboard
+GET http://localhost:3000/scoreboard?page=0&pageSize=10
 Authorization: Bearer {{token}}

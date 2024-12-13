@@ -4,19 +4,24 @@ import {validate} from "class-validator";
 import ValidationErrorList from "../dto/ValidationError";
 import QuestionCreateUpdateRequest from "../dto/question/QuestionCreateUpdateRequest";
 import {
+    getRandomUnansweredQuestion,
+    isQuestionAnswered,
     questionExistsById,
     questionExistsByTitle,
     serviceCreateQuestion,
     serviceDeleteQuestion,
     serviceGetQuestionById,
-    serviceGetQuestionByTitle,
+    serviceGetQuestionByTitle, serviceGetScoreboard,
     serviceListQuestions,
     servicePageQuestions,
-    serviceUpdateQuestion
+    serviceUpdateQuestion,
+    submitAnswer
 } from "../services/questionService";
 import QuestionPageRequest from "../dto/question/QuestionPageRequest";
 import {OrderDirection} from "../enum/OrderDirection";
 import {categoryExistsById} from "../services/categoryService";
+import QuestionAnswerRequest from "../dto/question/QuestionAnswerRequest";
+import {UserRole} from "../enum/UserRole";
 
 export const createQuestion = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
@@ -67,6 +72,9 @@ export const getQuestion = async (req: Request, res: Response, next: NextFunctio
         if (!question) {
             res.status(404).send();
             return;
+        }
+        if (req.user?.role !== UserRole.DESIGNER) {
+            question.answer = 0
         }
         res.status(200).json(question);
         return;
@@ -167,7 +175,90 @@ export const listQuestions = async (req: Request, res: Response, next: NextFunct
         }
 
         const questions = await servicePageQuestions(request)
+        if (req.user?.role !== UserRole.DESIGNER) {
+            for (const question of questions.content) {
+                question.answer = 0
+            }
+        }
         res.status(200).json(questions);
+        return;
+    } catch (e) {
+        next(e)
+    }
+};
+
+export const getRandomQuestion = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+        const {category} = req.query;
+        const parsedCategory = category ? parseInt(category as string) : undefined;
+
+        const userId = req.user?.id!
+
+        const questionId = await getRandomUnansweredQuestion(userId, parsedCategory)
+        if (!questionId) {
+            res.status(404).send()
+            return;
+        }
+
+        res.status(200).json({"questionId": questionId});
+        return;
+    } catch (e) {
+        next(e)
+    }
+};
+
+export const answerQuestion = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+        const request = plainToInstance(QuestionAnswerRequest, req.body);
+        const errors = await validate(request);
+        if (errors.length > 0) {
+            res.status(400).json({errors});
+            return;
+        }
+
+        const {id} = req.params;
+        const parsedId = parseInt(id)
+        console.log(parsedId)
+        if (!await questionExistsById(parsedId)) {
+            res.status(404).send();
+            return;
+        }
+
+        const userId = req.user?.id!;
+        if (await isQuestionAnswered(userId, parsedId)) {
+            const errors = new ValidationErrorList()
+            errors.addError(
+                request,
+                'id',
+                parsedId,
+                {'Unique': 'You\'ve already answered this question.'}
+            )
+            res.status(400).json(errors);
+            return;
+        }
+
+        const answeredQuestion = await submitAnswer(userId, parsedId, request.answer)
+        res.status(200).json(answeredQuestion);
+        return;
+    } catch (e) {
+        console.error("Caught error:", e);
+        next(e)
+    }
+};
+
+export const getScoreboard = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+        const {page, pageSize} = req.query;
+        const parsedPage = page ? parseInt(page as string) : 0;
+        const parsedPageSize = pageSize ? parseInt(pageSize as string) : null;
+        const request = new QuestionPageRequest()
+        request.page = parsedPage
+        if (parsedPageSize) {
+            request.pageSize = parsedPageSize
+        }
+
+        const scoreboard = await serviceGetScoreboard(request)
+        res.status(200).json(scoreboard);
         return;
     } catch (e) {
         next(e)

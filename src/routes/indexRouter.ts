@@ -1,29 +1,13 @@
 import {Router, Request, Response, NextFunction} from 'express';
 import {currentUser, login, register} from "../controllers/authController";
 import authenticateJWT from "../middlewares/jwtAuthenticator";
+import {getScoreboard} from "../controllers/questionController";
 
 const router: Router = Router();
 
-router.post('/login', (req: Request, res: Response, next: NextFunction) => {
-    try {
-        return login(req, res, next);
-    } catch (e) {
-        next(e);
-    }
-});
-router.post('/register', (req: Request, res: Response, next: NextFunction) => {
-    try {
-        return register(req, res, next);
-    } catch (e) {
-        next(e);
-    }
-});
-router.get('/current-user', authenticateJWT, (req: Request, res: Response, next: NextFunction) => {
-    try {
-        return currentUser(req, res, next);
-    } catch (e) {
-        next(e);
-    }
-});
+router.post('/login', login);
+router.post('/register', register);
+router.get('/current-user', authenticateJWT, currentUser);
+router.get('/scoreboard', authenticateJWT, getScoreboard);
 
 export default router;
